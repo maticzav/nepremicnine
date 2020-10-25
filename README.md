@@ -25,3 +25,16 @@ Delovne hipoteze:
 - Ali obstaja povezava med povprečno najemnino in prodajno ceno nepremičnin.
 - Kolikšen bi moral bit dodatek k plči glede na odaljenost od delovnega mesta za obdobje 10 let.
 - Katere občine delajo največjo izgubo z dnevnimi migracijami.
+
+---
+
+## Namestitev razvijalskega okolja
+
+Zaženi naslednje ukaze, da ustvariš virtual environment v tem repositoryju in namestiš potrebne knjižnice.
+
+```bash
+python3 -m venv .
+source bin/activate.fish
+
+pip install -r requirements.txt
+```
