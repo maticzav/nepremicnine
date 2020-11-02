@@ -1,4 +1,5 @@
 {
     "git.ignoreLimitWarning": true,
-    "python.pythonPath": "bin/python"
+    "python.pythonPath": "bin/python",
+    "terminal.integrated.inheritEnv": false
 }
