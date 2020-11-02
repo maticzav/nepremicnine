@@ -19,6 +19,21 @@ Podatke o gorivih in urnih postavkah bom pridobil iz:
 - https://www.stat.si/statweb
 - https://pxweb.stat.si/SiStat/sl
 
+### Viri
+
+#### Nrepremičnine
+
+- https://www.nepremicnine.net/oglasi-prodaja/
+- https://www.nepremicnine.net/oglasi-oddaja/
+- https://www.nepremicnine.net/oglasi-nakup/
+- https://www.nepremicnine.net/oglasi-najem/
+
+> Za listanje dodaš `/n/` nakonec zgornjih naslovov. Primer `https://www.nepremicnine.net/oglasi-najem/3/`.
+
+
+
+
+
 ### Obdelava podatkov
 
 Delovne hipoteze:
