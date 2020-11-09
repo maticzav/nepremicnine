@@ -1,23 +1,23 @@
+from json import load
 from bs4 import BeautifulSoup
+import re
 import os
 
 import orodja
+from orodja import vsebina_datoteke
 
 # Nastavitve
 
 NEPREMICNINE_NASLOV = 'https://www.nepremicnine.net'
-STEVILO_OGLASOV = {
-    "najem": 358,
-    "oddaja": 4700,
-    "nakup": 2100,
-    "prodaja": 20100,
-}
+NEPREMICNINE_POSREDOVANJA = [ "oddaja", "prodaja"]
+# NEPREMICNINE_POSREDOVANJA = [ "najem", "oddaja", "nakup", "prodaja"]
+
 NEPREMICNINE_JSON_DATOTEKA = "podatki/nepremicnine.json"
 NEPREMICNINE_CSV_DATOTEKA = "podatki/nepremicnine.csv"
 
 # Zbiralnik podatkov
 
-oglasi = dict() # slovar oglasov identificiranih z id-jem
+OGLASI = dict() # slovar oglasov identificiranih z id-jem
 
 """
 Posamezen oglas, ki ga preberemo ima sledečo obliko:
@@ -26,122 +26,196 @@ type Oglas {
     id: string
 
     # Informacije o oglasu
-    tip: 'najem' | 'oddaja' | 'nakup' | 'prodaja'
+    posredovanje: 'najem' | 'oddaja' | 'nakup' | 'prodaja'
     naslov: string
-    opis: string
-    spletna_stran: string
+    url: string
 
     # Podrobnosti oglasa
-    vrsta: string "stanovanje"
-    tipi: string "stirisobno"
-    leto: string
-    cena: string
-    velikost: string
+    kratek_opis: string
+    daljsi_opis: string
+
+    vrsta: string
+    regija: string
+    upravna_enota: string
+    obcina: string
+    
+    velikost: float
+    cena: float
+
+    slike: [string]
 
     # Dodatne informacije
-    atributi: string
     agencija: string
+
 }
 """
 
-podvojeni_oglasi = set() # zabeležimo si vse podvojene oglase
+PODVOJENI_OGLASI = set() # zabeležimo si vse podvojene oglase
 
-for domena in STEVILO_OGLASOV:
-
-    # Podatki o domeni
-    STEVILO_OGLASOV_V_DOMENI = STEVILO_OGLASOV[domena]
+for posredovanje in NEPREMICNINE_POSREDOVANJA:
 
     # Podatki o napredku
-    stevilo_oglasov = 0
+    stevilo_oglasov_v_posredovanju = 0
     stran = 1
 
-    while stevilo_oglasov < STEVILO_OGLASOV_V_DOMENI:
+    while True:
         # Podatki o strani
-        url = f'{NEPREMICNINE_NASLOV}/oglasi-{domena}/{stran}/'
-        datoteka = f'podatki/nepremicnine/{domena}/{stran}.html'
+        url = f'{NEPREMICNINE_NASLOV}/oglasi-{posredovanje}/{stran}/'
+        datoteka = f'podatki/nepremicnine/{posredovanje}/{stran}.html'
 
         # Naloži stran
         orodja.shrani_spletno_stran(url, datoteka)
-        vsebina = orodja.vsebina_datoteke(datoteka)
+        vsebina_oglasov = orodja.vsebina_datoteke(datoteka)
 
         # Analiziraj podatke
-        soup = BeautifulSoup(vsebina, 'html.parser')
-        oglasi_na_strani = soup.find_all("div", class_="oglas_container")
+        soup = BeautifulSoup(vsebina_oglasov, 'html.parser')
+        oglasi = soup.find_all("div", class_="oglas_container")
 
         # Preveri vsebino podatkov
-        if len(oglasi_na_strani) == 0:
-            raise ValueError('Ni več oglasov v {domena}. Zbrano {stevilo_oglasov}/{STEVILO_OGLASOV_V_DOMENI}')
+        if len(oglasi) == 0:
+            break
 
-        # Analiziraj posamezen oglas
-        for oglas in oglasi_na_strani:
+        # Analiziramo posamezen oglas tako, da uporabimo 
+        # funkcije iz BS na match-u enega oglasa.
+        for oglas in oglasi:
 
             # Oglas
             id = oglas.get('id')
 
             # Preveri ali oglas že obstaja
-            if oglasi.get(id):
-                podvojeni_oglasi.add(id)
+            if OGLASI.get(id):
+                PODVOJENI_OGLASI.add(id)
                 continue
-                # raise ValueError(f'Podvojen oglas {id} v {domena} na strani {stran}.')
 
             # Informacije o oglasu
-            tip = domena
+            posredovanje = posredovanje
             naslov = oglas.find("span", class_="title").string
-            opis = getattr(oglas.find("div", itemprop="description"), "string", None)
-            spletna_stran = f"{NEPREMICNINE_NASLOV}{oglas.find('a')['href']}"
-            
+            url_oglasa = f"{NEPREMICNINE_NASLOV}{oglas.find('a')['href']}"
+
+            # Podrobne informacije o oglasu dobimo iz strani posameznega
+            # oglasa. Z vsebino strani naredimo nov BS soup_oglasa.
+            datoteka_oglasa = f'podatki/nepremicnine/oglasi/{id}.html'
+
+            orodja.shrani_spletno_stran(url_oglasa, datoteka_oglasa)
+            vsebina_oglasa = orodja.vsebina_datoteke(datoteka_oglasa)
+
+            # Analiziraj podatke o oglasu
+            soup_oglasa = BeautifulSoup(vsebina_oglasa, 'html.parser')
+
+            if soup_oglasa.find(string=[ "Not Found", "Oglas ni več aktiven." ]):
+                print(f"Napaka: {url_oglasa}")
+                continue
+
             # Podrobnosti oglasa
-            vrsta = oglas.find("span", class_="vrsta").string
-            tipi = getattr(oglas.find("span", class_="tipi"), "string", None)
-            leto = getattr(oglas.find("span", class_="leto"), "string", None)
-            cena = oglas.find("span", class_="cena").string
+            kratek_opis = soup_oglasa.find("div", itemprop="description").getText()
+            daljsi_opis = getattr(soup_oglasa.find("div", _class="web-opis"), "string", None)
+
+            informacije = soup_oglasa.find("div", class_="more_info").string
+
+            vrsta = re.compile("Vrsta: ([\w\sščž.]+)").search(informacije)
+            if vrsta:
+                vrsta = vrsta.group(1).strip()
+
+            regija = re.compile("Regija: ([\w\sščž.]+)").search(informacije)
+            if regija:
+                regija = regija.group(1).strip()
+
+            upravna_enota = re.compile("Upravna enota: ([\w\sščž.]+)").search(informacije)
+            if upravna_enota:
+                upravna_enota = upravna_enota.group(1).strip()
+
+            obcina = re.compile("Občina: ([\w\sščž.]+)").search(informacije)
+            if obcina:
+                obcina = obcina.group(1).strip()
+
+            
+            vzorec_velikosti = re.compile("([\d,.]+)")
             velikost = oglas.find("span", class_="velikost").string
+            if velikost:
+                velikost = vzorec_velikosti.search(velikost).group(1)
+                velikost = velikost.replace(".", "").replace(",", ".")
+                velikost = float(velikost)
+
+            cena = oglas.find("meta", itemprop="price")
+            if cena and cena["content"]:
+                cena = float(cena["content"])
+
+            slike = []
+            for slika in soup_oglasa.find_all("a", class_="rsImg"):
+                slike.append(slika["href"].replace("sIo", "slo"))
             
             # Dodatne informacije
-            atributi = oglas.find("div", class_="atributi").string
             agencija = oglas.find("span", class_="agencija").string
 
             # Zabeleži oglas
-            oglasi[id] = {
+            OGLASI[id] = {
                 "id": id,
 
                 # Informacije o oglasu
-                "tip": tip,
+                "posredovanje": posredovanje,
                 "naslov": naslov,
-                "opis": opis,
-                "spletna_stran": spletna_stran,
+                "url": url_oglasa,
 
                 # Podrobnosti oglasa
+                "kratek_opis": kratek_opis,
+                "daljsi_opis": daljsi_opis,
+
                 "vrsta": vrsta,
-                "tipi": tipi,
-                "leto": leto,
+                "regija": regija,
+                "upravna_enota": upravna_enota,
+                "obcina": obcina,
+
                 "cena": cena,
                 "velikost": velikost,
 
+                "slike": slike,
+
                 # Dodatne informacije
-                "atributi": atributi,
                 "agencija": agencija
             }
 
+            stevilo_oglasov_v_posredovanju += 1
+
         # Posodobi informacije o napredku
         stran += 1
-        stevilo_oglasov += len(oglasi_na_strani)
+        # Shrani podatke v datotetko
+        orodja.zapisi_json(
+            { "oglasi": list(OGLASI.values()) }, 
+            NEPREMICNINE_JSON_DATOTEKA
+        )
 
-        print(f"Napredek: {domena}/{stevilo_oglasov}/{STEVILO_OGLASOV_V_DOMENI}")
+        print(f"Napredek: {posredovanje}/{stevilo_oglasov_v_posredovanju}")
+    # Konec zanke
 
-    print(f"Našel {stevilo_oglasov} oglasov v {domena}!")
-
-print(f"Podvojeni oglasi: {podvojeni_oglasi}")
+print(f"Podvojeni oglasi: {PODVOJENI_OGLASI}")
 
 
-# Shrani podatke v datotetki
+# Shrani podatke v datotetko
+# JSON
 json = {
-    "oglasi": list(oglasi.values())
+    "oglasi": list(OGLASI.values())
 }
 orodja.zapisi_json(json, NEPREMICNINE_JSON_DATOTEKA)
 
-csv = list(oglasi.values())
-stolpci = ["id", "tip", "naslov", "opis", "spletna_stran", "vrsta", "tipi", "leto", "cena", "velikost", "atributi", "agencija"]
+# CSV
+json_vsebina = orodja.vsebina_datoteke(NEPREMICNINE_JSON_DATOTEKA)
+json = load(json_vsebina)
+
+csv = list(json["oglasi"])
+stolpci = [
+    "id", 
+    "tip", 
+    "naslov", 
+    "opis", 
+    "spletna_stran", 
+    "vrsta", 
+    "tipi", 
+    "leto", 
+    "cena", 
+    "velikost", 
+    "atributi", 
+    "agencija"
+]
 orodja.zapisi_csv(csv, stolpci, NEPREMICNINE_CSV_DATOTEKA)
 
-print(f"Shranil {sum(STEVILO_OGLASOV.values())} oglasov.")
+print("Shranil!")

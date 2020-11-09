@@ -31,6 +31,11 @@ Podatke o gorivih in urnih postavkah bom pridobil iz:
 > Za listanje dodaš `/n/` nakonec zgornjih naslovov. Primer `https://www.nepremicnine.net/oglasi-najem/3/`.
 
 
+#### Stoje Nepremičnine
+
+- https://www.stoja-trade.si/Nepremicnine/p33.html
+
+> Za listanje spremeniš številjo na koncu `/pN.html`.
 
 
 
