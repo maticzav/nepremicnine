@@ -137,8 +137,11 @@ for posredovanje in NEPREMICNINE_POSREDOVANJA:
                 velikost = float(velikost)
 
             cena = oglas.find("meta", itemprop="price")
-            if cena and cena["content"]:
-                cena = float(cena["content"])
+            if cena:
+                if cena["content"]:
+                    cena = float(cena["content"])
+                else:
+                    cena = None
 
             slike = []
             for slika in soup_oglasa.find_all("a", class_="rsImg"):

@@ -19,6 +19,18 @@ Podatke o gorivih in urnih postavkah bom pridobil iz:
 - https://www.stat.si/statweb
 - https://pxweb.stat.si/SiStat/sl
 
+
+Podatke o podjetjih bom pridobil iz strani [bizi.si](https://www.bizi.si).
+O vsakem podjetju si bom zapisal:
+- naslov (kraj)
+- št. zaposlenih
+- ime podjetja
+- panoge s katerimi se ukvarjajo
+- prihodek zadnjih treh let
+
+Podatke o dnevnih migracijah bom pridobil iz Statističnega urada RS.
+
+
 ### Viri
 
 #### Nrepremičnine
@@ -38,8 +50,20 @@ Podatke o gorivih in urnih postavkah bom pridobil iz:
 > Za listanje spremeniš številjo na koncu `/pN.html`.
 
 
+#### Bizi.si
+
 
 ### Obdelava podatkov
+
+Izračunal bom:
+- povprečno ceno na kvadratni meter nepremičnine v dani občini ter primerjal podatke o ceni nepremičnin med občinami,
+- razdaljo med posameznimi občinami ter ocenil stroške tranzita med občinami ter povprečni čas tranzita,
+- povprečno ceno najema poslovnih prostorov v posamezni občini,
+- analizral podjetja z največjim dobičkom glede na občine,
+- ocenil absolutni delež ljudi v tranzitu znotraj posamezne firme na podlagi podatkov o dnevnih migracijah,
+- ocenil skupno vrednost dnevnih migracij glede na čas in stroške prometa posamezne občine ter pri tem upošteval koliko denarja ljudje v tranzitu porabijo v povprečju v drugi občini.
+
+
 
 Delovne hipoteze:
 - Ali obstaja povezava med povprečno najemnino in prodajno ceno nepremičnin.
