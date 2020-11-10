@@ -1,14 +1,29 @@
 import puppeteer from 'puppeteer'
+import * as fs from 'fs'
+import * as path from 'path'
+
+/* Nastavitve */
 
 const CREDS = {
-  username: 'maticzav',
-  password: 'ac8b2a34',
+  username: 'username',
+  password: 'password',
 }
 
-/**
- * Reserve all the spots available.
- */
+/* Struktura podatkov */
 
+let tabele: string[] = []
+
+let podjetja: Podjetje[] = []
+
+type Podjetje = {
+  id: string // maticna stevilka
+  ime: string // naziv
+  obina: string
+  stevilo_zaposlenih: string
+  dobicek: string
+}
+
+/* Zbiralec podatkov */
 ;(async () => {
   const browser = await puppeteer.launch({
     // executablePath: 'google-chrome-stable',
@@ -41,20 +56,8 @@ const CREDS = {
   await page.waitForSelector('.login-form')
   await page.waitForTimeout(1000)
 
-  await page.type(
-    '#ctl00_loginBoxPopup_loginBoxAlt_tbUserName',
-    CREDS.username,
-    {
-      delay: 1,
-    },
-  )
-  await page.type(
-    '#ctl00_loginBoxPopup_loginBoxAlt_tbPassword',
-    CREDS.password,
-    {
-      delay: 1,
-    },
-  )
+  await page.type('#ctl00_loginBoxPopup_loginBoxAlt_tbUserName', CREDS.username)
+  await page.type('#ctl00_loginBoxPopup_loginBoxAlt_tbPassword', CREDS.password)
 
   await page.click('#ctl00_loginBoxPopup_loginBoxAlt_btnLogin')
 
@@ -62,7 +65,7 @@ const CREDS = {
 
   console.log('Logged in!')
 
-  /* Find data */
+  /* Fill in the search parameters. */
 
   await page.goto('https://www.bizi.si/napredno-iskanje/')
 
@@ -72,24 +75,54 @@ const CREDS = {
 
   await page.select('#ctl00_SearchAdvanced1_SteviloZaposlenihOd', '07')
   await page.waitForTimeout(1000)
-  await page.click('#ctl00_SearchAdvanced1_btnPoisciPodjetja')
+
+  await page.evaluate(() => {
+    // @ts-ignore
+    __doPostBack('ctl00$SearchAdvanced1$btnPoisciPodjetja', '')
+  })
 
   console.log('Displaying results...')
 
-  // await page.waitForNavigation()
+  /* Find all the data */
+  while (true) {
+    await page.waitForSelector('#divResults')
+    await page.waitForTimeout(1000)
 
-  // javascript: setTimeout(
-  //   "__doPostBack('ctl00$SearchAdvanced1$SteviloZaposlenihOd','')",
-  //   0,
-  // )
-  /* Reserve */
-  // await page.waitFor('input#selectAllSwitch1')
-  // await page.click('input#selectAllSwitch1')
-  // await page.click('.card.rounded-0 button')
+    /* Extract results */
+    /* prettier-ignore */
+    const table = await page.evaluate(() => document.querySelector('#divResults').outerHTML)
+    tabele.push(table)
 
-  // await page.waitFor('#feedback.toast')
+    /* Save tables to file. */
+    const file = path.join(__dirname, 'podatki/bizi/tabele.json')
+    fs.writeFileSync(file, JSON.stringify(tabele, null, 4))
 
-  // await page.click('a[href="/rezervacije-odjava"]')
+    console.log('Saved tables....')
 
-  // await browser.close()
+    // const $table = await page.$('#divResults')
+
+    // /* Extract information company information. */
+    // $table.$$()
+
+    // if (!$table) throw new Error('Something went wrong...')
+
+    /* Try pressing next */
+    const isLast = await page.evaluate(() => {
+      let element = document.querySelector('ul.numbers > li:last-child')
+      // @ts-ignore
+      if (parseInt(element.innerText) == NaN) {
+        return true
+      }
+      return false
+    })
+
+    /* We reached the last page */
+    if (isLast) break
+
+    await page.click('ul.numbers > li:last-child')
+  }
+
+  console.log('Loaded all data...')
+
+  await browser.close()
 })()
