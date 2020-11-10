@@ -51,3 +51,8 @@ def zapisi_json(objekt, ime_datoteke):
     pripravi_imenik(ime_datoteke)
     with open(ime_datoteke, 'w', encoding='utf-8') as json_datoteka:
         json.dump(objekt, json_datoteka, indent=4, ensure_ascii=False)
+
+def vsebina_json_datoteke(ime_datoteke):
+    '''Vrne json vsebino datoteke z danim imenom.'''
+    with open(ime_datoteke, encoding='utf-8') as datoteka:
+        return json.load(datoteka)

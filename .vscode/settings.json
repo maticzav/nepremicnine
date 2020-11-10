@@ -1,6 +1,9 @@
 {
-    "git.ignoreLimitWarning": true,
-    "python.pythonPath": "bin/python",
-    "terminal.integrated.inheritEnv": false,
-    "editor.formatOnSave": true
+  "git.ignoreLimitWarning": true,
+  "python.pythonPath": "bin/python",
+  "terminal.integrated.inheritEnv": false,
+  "editor.formatOnSave": true,
+  "[python]": {
+    "editor.formatOnSave": false
+  }
 }

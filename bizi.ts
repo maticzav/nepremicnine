@@ -5,23 +5,26 @@ import * as path from 'path'
 /* Nastavitve */
 
 const CREDS = {
-  username: 'username',
-  password: 'password',
+  username: 'polnibizi419',
+  password: 'bizi419',
 }
+
+// value="02" > 2
+// value="03" > 3
+// value="04" > 5
+// value="05" > 10
+// value="06" > 20
+// value="07" > 50
+// value="08" > 100
+// value="09" > 150
+// value="10" > 200
+// value="11" > 250
+// value="12" > 500
+const ZAPOSLENI = '05'
 
 /* Struktura podatkov */
 
 let tabele: string[] = []
-
-let podjetja: Podjetje[] = []
-
-type Podjetje = {
-  id: string // maticna stevilka
-  ime: string // naziv
-  obina: string
-  stevilo_zaposlenih: string
-  dobicek: string
-}
 
 /* Zbiralec podatkov */
 ;(async () => {
@@ -73,7 +76,7 @@ type Podjetje = {
 
   await page.waitForSelector('#ctl00_SearchAdvanced1_btnPoisciPodjetja')
 
-  await page.select('#ctl00_SearchAdvanced1_SteviloZaposlenihOd', '07')
+  await page.select('#ctl00_SearchAdvanced1_SteviloZaposlenihOd', ZAPOSLENI)
   await page.waitForTimeout(1000)
 
   await page.evaluate(() => {
@@ -84,9 +87,12 @@ type Podjetje = {
   console.log('Displaying results...')
 
   /* Find all the data */
+  let pagingation = 0
+
   while (true) {
+    /* Extract table from the page. */
     await page.waitForSelector('#divResults')
-    await page.waitForTimeout(1000)
+    await page.waitForTimeout(5 * 1000)
 
     /* Extract results */
     /* prettier-ignore */
@@ -97,29 +103,31 @@ type Podjetje = {
     const file = path.join(__dirname, 'podatki/bizi/tabele.json')
     fs.writeFileSync(file, JSON.stringify(tabele, null, 4))
 
-    console.log('Saved tables....')
-
-    // const $table = await page.$('#divResults')
-
-    // /* Extract information company information. */
-    // $table.$$()
-
-    // if (!$table) throw new Error('Something went wrong...')
+    console.log(`Saved tables....${pagingation}`)
 
     /* Try pressing next */
     const isLast = await page.evaluate(() => {
-      let element = document.querySelector('ul.numbers > li:last-child')
-      // @ts-ignore
-      if (parseInt(element.innerText) == NaN) {
-        return true
+      let element = document.querySelector<HTMLElement>(
+        'ul.numbers > li:last-child',
+      ).innerText
+
+      console.log(element, parseInt(element))
+
+      /* Once the last element equals to a page number we are on the last page. */
+      if (isNaN(parseInt(element))) {
+        return false
       }
-      return false
+      return true
     })
 
     /* We reached the last page */
-    if (isLast) break
+    if (isLast) {
+      break
+    }
 
     await page.click('ul.numbers > li:last-child')
+    // Update page count.
+    pagingation += 1
   }
 
   console.log('Loaded all data...')
