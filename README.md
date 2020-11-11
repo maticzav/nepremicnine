@@ -1,38 +1,93 @@
 # nepremicnine
 
-Analiziral bom oglase za prodajo in najem nepremičnin v večjih Slovenskih mestih na strani [Nepremičnine.net](http://nepremicnine.net/) in podatke združil z informacijami o naseljenosti posameznih regij v katerih nepremičnine stojijo ter odaljenost od prometnic in večjih mest.
+Z nalogo želim analizirat razmerja stroškov, ki posredno, a odločilno, vplivajo na razvoj posameznika znotraj okolja v katerem živi. Ker je okolje zelo splošen pojem, se bom osredotočil na analize znotraj posameznih občin. Med vplivne stroške bom v raziskavi uverstil:
 
-### Zajem podatkov
+- ceno nepremičnin v dani občini,
+- povprečen čas porabljen za vožnjo do službe,
+- potne stroške,
+- ceno poslovnih prostorov v občini v katero ljudje migrirajo.
 
-Za vsako nepremičnino bom zajel:
+Z raziskavo bi rad ugotovil, kolikšen delež BDP RS porabimo neefektivno zaradi okoljskih stisk in trenutne državne ureditve.
 
-- naslov in datum objave oglasa
-- velikost stanovanja ter število sob
-- ceno najema oziroma prodajno ceno
-- kraj nepremičnine
-- tip nepremičnine (poslovni prostor, kmetijsko zemljišči, bivalni prostor)
+## Zajem podatkov
 
-Podatke o odaljenosti od prometnic bom zajemal s pomočjo Google Maps.
-Glede na razdaljo bom ocenil predviden čas in razdaljo vožnje na delo, ki ju bom ocenil glede na povprečno ceno goriva in urno postavko delavca v Sloveniji.
+Podatke za raziskavo bom zajemal iz štirih strani.
 
-Podatke o gorivih in urnih postavkah bom pridobil iz:
+- [nepremičnine.net](https://nepremicnine.net)
+- [bizi.si](https://bizi.si)
+- [stat.si](https://pxweb.stat.si/)
+- [skupnostobcin.si](https://skupnostobcin.si/obcine/)
 
-- https://www.gov.si/teme/cene-naftnih-derivatov/
-- https://www.stat.si/statweb
-- https://pxweb.stat.si/SiStat/sl
+Za vsako nepremičnino s strani [nepremičnine.net](https://nepremicnine.net) bom zajel:
+
+- način posredovanja
+- naslov oglasa
+- url do strani z oglasom
+- kratek in daljši opis nepremičnine
+- vrsto nepremičnine ("Poslovni prostor, Stanovanje...")
+- regijo, upravno enoto ter občino v kateri nepremičnina stoji
+- velikost nepremičnine v m2 in ceno
+- seznam url-jev do slik
+- agencijo, ki posreduje pri nepremičnini
 
 Podatke o podjetjih bom pridobil iz strani [bizi.si](https://www.bizi.si).
 O vsakem podjetju si bom zapisal:
 
-- naslov (kraj)
-- št. zaposlenih
 - ime podjetja
-- panoge s katerimi se ukvarjajo
-- prihodek zadnjih treh let
+- matično številko podjetja za identifikacijo
+- občino v kateri je podjetje registrirano
+- št. zaposlenih (ocena glede na spodnjo mejo, ki jo bizi.si prikaže)
+- prihodek oziroma izgubo zadnjega leta (2019)
 
-Podatke o dnevnih migracijah bom pridobil iz Statističnega urada RS.
+<!-- - panoge s katerimi se ukvarjajo -->
 
-### Viri
+Podatke o občinah bom pridobil iz Statističnega urada RS in zemljevidov Google Maps.
+O vsaki občini si bom shranil:
+
+- ime občine
+- število prebivalcev po starostnih skupinah
+- razdaljo od središča občine do drugih občin
+
+Poleg tega bom iz Statističnega urada RS pridobil še podatke o
+
+- povprečni ceni goriva
+- povprečno urno postavko glede na starostno skupino
+
+> Povprečno urno postavko bom, predvidevam, moral izračunat glede na neto povprečno plačo s povprečnim delavnikom 4 x 5dni x 8h.
+
+Podatke o županih občin bom pridobil s strani [skupnostobcin.si](https://skupnostobcin.si/obcine/):
+O vsakem županu si bom zabeležil:
+
+- ime
+- občino v kateri deluje
+
+## Obdelava podatkov
+
+Obdelani podatki pripravljeni za uporabo v raziskavi so zbrani v mapi `podatki`. Posamezne strani za pridobitev teh podatkov so zbrane znotraj podmap z ustreznimi imeni.
+
+- `bizi.csv` in `bizi.json` vsebujeta podatke o zaslužkih podjetji v občinah in številu zaposlenih v teh podjetjih.
+- `nepremicnine.csv` in `nepremicnine.json` vsebujeta podatke o oglasih nepremičnin na spletni strani.
+- `stat.csv` in `stat.json` vsebujeta podatke o občinah.
+- `zupani.csv` in `zupani.json` vsebujeta podatke o županih Slovenskih občin.
+
+Izračunal bom:
+
+- povprečno ceno na kvadratni meter nepremičnine v dani občini ter primerjal podatke o ceni nepremičnin med občinami,
+- razdaljo med posameznimi občinami ter ocenil stroške tranzita med občinami ter povprečni čas tranzita,
+- povprečno ceno najema poslovnih prostorov v posamezni občini,
+- analizral podjetja z največjim dobičkom glede na občine,
+- ocenil absolutni delež ljudi v tranzitu znotraj posamezne firme na podlagi podatkov o dnevnih migracijah,
+- ocenil skupno vrednost dnevnih migracij glede na čas in stroške prometa posamezne občine ter pri tem upošteval koliko denarja ljudje v tranzitu porabijo v povprečju v drugi občini.
+
+Delovne hipoteze:
+
+- Ali obstaja povezava med povprečno najemnino in prodajno ceno nepremičnin.
+- Kolikšen bi moral bit dodatek k plči glede na odaljenost od delovnega mesta za obdobje 10 let.
+- Katere občine delajo največjo izgubo z dnevnimi migracijami.
+
+---
+
+## Viri
 
 #### Nrepremičnine
 
@@ -55,22 +110,10 @@ Za pridobivanje podatkov iz bizi.si uporabljamo orodje Puppeteer, ki zažene hea
 
 Za pridobitev podatkov skripta bizi.si potrbuje podatke o dostopu, ki jih nastavimo znotraj datoteke `bizi.ts`.
 
-### Obdelava podatkov
+#### SiStat
 
-Izračunal bom:
-
-- povprečno ceno na kvadratni meter nepremičnine v dani občini ter primerjal podatke o ceni nepremičnin med občinami,
-- razdaljo med posameznimi občinami ter ocenil stroške tranzita med občinami ter povprečni čas tranzita,
-- povprečno ceno najema poslovnih prostorov v posamezni občini,
-- analizral podjetja z največjim dobičkom glede na občine,
-- ocenil absolutni delež ljudi v tranzitu znotraj posamezne firme na podlagi podatkov o dnevnih migracijah,
-- ocenil skupno vrednost dnevnih migracij glede na čas in stroške prometa posamezne občine ter pri tem upošteval koliko denarja ljudje v tranzitu porabijo v povprečju v drugi občini.
-
-Delovne hipoteze:
-
-- Ali obstaja povezava med povprečno najemnino in prodajno ceno nepremičnin.
-- Kolikšen bi moral bit dodatek k plči glede na odaljenost od delovnega mesta za obdobje 10 let.
-- Katere občine delajo največjo izgubo z dnevnimi migracijami.
+- https://pxweb.stat.si/SiStatData/pxweb/sl/Data/-/05C4002S.px/table/tableViewLayout2/
+- https://www.gov.si/teme/cene-naftnih-derivatov/
 
 ---
 
