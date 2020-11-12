@@ -8,6 +8,8 @@ from orodja import vsebina_datoteke
 
 # Nastavitve
 
+IZLUSCI_HTML = False
+
 NEPREMICNINE_NASLOV = 'https://www.nepremicnine.net'
 NEPREMICNINE_POSREDOVANJA = [ "oddaja", "prodaja"]
 # NEPREMICNINE_POSREDOVANJA = [ "najem", "oddaja", "nakup", "prodaja"]
@@ -58,8 +60,9 @@ PODVOJENI_OGLASI = set() # zabeležimo si vse podvojene oglase
 
 for posredovanje in NEPREMICNINE_POSREDOVANJA:
 
-    # Skip
-    # break
+    # Preskoči izluščanje glede na nastavitev.
+    if not IZLUSCI_HTML:
+        break
 
     # Podatki o napredku
     stevilo_oglasov_v_posredovanju = 0
@@ -218,12 +221,11 @@ for posredovanje in NEPREMICNINE_POSREDOVANJA:
 # print(f"Podvojeni oglasi: {PODVOJENI_OGLASI}")
 
 
-# # Shrani podatke v datotetko
-# # JSON
-# json = {
-#     "oglasi": list(OGLASI.values())
-# }
-# orodja.zapisi_json(json, NEPREMICNINE_JSON_DATOTEKA)
+# Shrani podatke v datotetko
+# JSON
+if IZLUSCI_HTML:
+    json_vsebina = { "oglasi": list(OGLASI.values()) }
+    orodja.zapisi_json(json_vsebina, NEPREMICNINE_JSON_DATOTEKA)
 
 # CSV
 json = orodja.vsebina_json_datoteke(NEPREMICNINE_JSON_DATOTEKA)
@@ -231,8 +233,8 @@ json = orodja.vsebina_json_datoteke(NEPREMICNINE_JSON_DATOTEKA)
 csv = []
 
 for oglas in list(json["oglasi"]):
-
-    delattr(oglas, "slike")
+    oglas.pop("daljsi_opis")
+    oglas.pop("slike")
     csv.append(oglas)
 
 stolpci = [
@@ -243,7 +245,7 @@ stolpci = [
     "url", 
     # Podrobnosti oglasa
     "kratek_opis",
-    "daljsi_opis",
+    # "daljsi_opis",
 
     "vrsta",
     "regija",
@@ -252,7 +254,9 @@ stolpci = [
 
     "velikost", 
     "cena",
-    "leto", 
+    "leto",
+
+    # "slike", 
     
     # Stanovanja
     "sobe",
