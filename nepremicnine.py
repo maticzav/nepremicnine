@@ -41,8 +41,12 @@ type Oglas {
     
     velikost: float
     cena: float
+    leto: int
 
     slike: [string]
+
+    # Stanovanja
+    sobe: float
 
     # Dodatne informacije
     agencija: string
@@ -53,6 +57,9 @@ type Oglas {
 PODVOJENI_OGLASI = set() # zabeležimo si vse podvojene oglase
 
 for posredovanje in NEPREMICNINE_POSREDOVANJA:
+
+    # Skip
+    # break
 
     # Podatki o napredku
     stevilo_oglasov_v_posredovanju = 0
@@ -108,7 +115,11 @@ for posredovanje in NEPREMICNINE_POSREDOVANJA:
 
             # Podrobnosti oglasa
             kratek_opis = soup_oglasa.find("div", itemprop="description").getText()
-            daljsi_opis = getattr(soup_oglasa.find("div", _class="web-opis"), "string", None)
+            daljsi_opis = soup_oglasa.find("div", class_="web-opis")
+            if daljsi_opis:
+                daljsi_opis = daljsi_opis.getText()
+            else:
+                daljsi_opis = None
 
             informacije = soup_oglasa.find("div", class_="more_info").string
 
@@ -150,6 +161,21 @@ for posredovanje in NEPREMICNINE_POSREDOVANJA:
             # Dodatne informacije
             agencija = oglas.find("span", class_="agencija").string
 
+            # Obdelaj opis
+            vzorec_sobe = re.compile("(\d(?:[,.]5)?)-sobno")
+            sobe = None
+            if kratek_opis:
+                sobe = vzorec_sobe.search(kratek_opis)
+                if sobe:
+                    sobe = float(sobe.group(1).replace(",", "."))
+
+            vzorec_leto = re.compile("\d{4}")
+            leta = vzorec_leto.findall(kratek_opis)
+            if leta:
+                leto = min([int(leto) for leto in leta])
+            else:
+                leto = None
+
             # Zabeleži oglas
             OGLASI[id] = {
                 "id": id,
@@ -168,10 +194,14 @@ for posredovanje in NEPREMICNINE_POSREDOVANJA:
                 "upravna_enota": upravna_enota,
                 "obcina": obcina,
 
-                "cena": cena,
                 "velikost": velikost,
+                "cena": cena,
+                "leto": leto,
 
                 "slike": slike,
+
+                # Stanovanje
+                "sobe": sobe,
 
                 # Dodatne informacije
                 "agencija": agencija
@@ -181,42 +211,53 @@ for posredovanje in NEPREMICNINE_POSREDOVANJA:
 
         # Posodobi informacije o napredku
         stran += 1
-        # Shrani podatke v datotetko
-        orodja.zapisi_json(
-            { "oglasi": list(OGLASI.values()) }, 
-            NEPREMICNINE_JSON_DATOTEKA
-        )
 
         print(f"Napredek: {posredovanje}/{stevilo_oglasov_v_posredovanju}")
     # Konec zanke
 
-print(f"Podvojeni oglasi: {PODVOJENI_OGLASI}")
+# print(f"Podvojeni oglasi: {PODVOJENI_OGLASI}")
 
 
-# Shrani podatke v datotetko
-# JSON
-json = {
-    "oglasi": list(OGLASI.values())
-}
-orodja.zapisi_json(json, NEPREMICNINE_JSON_DATOTEKA)
+# # Shrani podatke v datotetko
+# # JSON
+# json = {
+#     "oglasi": list(OGLASI.values())
+# }
+# orodja.zapisi_json(json, NEPREMICNINE_JSON_DATOTEKA)
 
 # CSV
-json_vsebina = orodja.vsebina_datoteke(NEPREMICNINE_JSON_DATOTEKA)
-json = load(json_vsebina)
+json = orodja.vsebina_json_datoteke(NEPREMICNINE_JSON_DATOTEKA)
 
-csv = list(json["oglasi"])
+csv = []
+
+for oglas in list(json["oglasi"]):
+
+    delattr(oglas, "slike")
+    csv.append(oglas)
+
 stolpci = [
     "id", 
-    "tip", 
+    # Informacije
+    "posredovanje", 
     "naslov", 
-    "opis", 
-    "spletna_stran", 
-    "vrsta", 
-    "tipi", 
-    "leto", 
-    "cena", 
+    "url", 
+    # Podrobnosti oglasa
+    "kratek_opis",
+    "daljsi_opis",
+
+    "vrsta",
+    "regija",
+    "upravna_enota",
+    "obcina",
+
     "velikost", 
-    "atributi", 
+    "cena",
+    "leto", 
+    
+    # Stanovanja
+    "sobe",
+
+    # Dodatne informacije
     "agencija"
 ]
 orodja.zapisi_csv(csv, stolpci, NEPREMICNINE_CSV_DATOTEKA)

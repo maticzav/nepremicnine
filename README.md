@@ -16,7 +16,6 @@ Podatke za raziskavo bom zajemal iz štirih strani.
 - [nepremičnine.net](https://nepremicnine.net)
 - [bizi.si](https://bizi.si)
 - [stat.si](https://pxweb.stat.si/)
-- [skupnostobcin.si](https://skupnostobcin.si/obcine/)
 
 Za vsako nepremičnino s strani [nepremičnine.net](https://nepremicnine.net) bom zajel:
 
@@ -55,12 +54,6 @@ Poleg tega bom iz Statističnega urada RS pridobil še podatke o
 
 > Povprečno urno postavko bom, predvidevam, moral izračunat glede na neto povprečno plačo s povprečnim delavnikom 4 x 5dni x 8h.
 
-Podatke o županih občin bom pridobil s strani [skupnostobcin.si](https://skupnostobcin.si/obcine/):
-O vsakem županu si bom zabeležil:
-
-- ime
-- občino v kateri deluje
-
 ## Obdelava podatkov
 
 Obdelani podatki pripravljeni za uporabo v raziskavi so zbrani v mapi `podatki`. Posamezne strani za pridobitev teh podatkov so zbrane znotraj podmap z ustreznimi imeni.
@@ -68,7 +61,6 @@ Obdelani podatki pripravljeni za uporabo v raziskavi so zbrani v mapi `podatki`.
 - `bizi.csv` in `bizi.json` vsebujeta podatke o zaslužkih podjetji v občinah in številu zaposlenih v teh podjetjih.
 - `nepremicnine.csv` in `nepremicnine.json` vsebujeta podatke o oglasih nepremičnin na spletni strani.
 - `stat.csv` in `stat.json` vsebujeta podatke o občinah.
-- `zupani.csv` in `zupani.json` vsebujeta podatke o županih Slovenskih občin.
 
 Izračunal bom:
 
