@@ -7,12 +7,12 @@ import orodja
 # Nastavitve
 
 BIZI_PODATKI = "podatki/bizi/tabele.json"
-BIZI_JSON_DATOTEKA = "podatki/bizi.json"
-BIZI_CSV_DATOTEKA = "podatki/bizi.csv"
+BIZI_JSON_DATOTEKA = "podatki/podjetja.json"
+BIZI_CSV_DATOTEKA = "podatki/podjetja.csv"
 
 PODATKI = orodja.vsebina_json_datoteke(BIZI_PODATKI)
 
-# Zbiralnik podatkov
+# Zbiralnik podatkov ---------------------------------------------------------
 
 PODJETJA = dict()
 
@@ -58,7 +58,8 @@ for tabela in PODATKI:
 
 
 
-# Shrani podatke v datotetko
+# Shrani podatke v datotetko -------------------------------------------------
+
 # JSON
 json = {
     "podjetja": list(PODJETJA.values())

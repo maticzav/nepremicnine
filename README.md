@@ -44,7 +44,23 @@ Podatke o občinah bom pridobil iz Statističnega urada RS in zemljevidov Google
 O vsaki občini si bom shranil:
 
 - ime občine
-- število prebivalcev po starostnih skupinah
+
+- število delovno aktivnih prebivalcev po prebivališču
+- število delovno aktvnih prebivalcev po delovnem mestu
+- delež delovno aktivnih prebivalcev, ki dnevno migrirajo
+- delež delovno aktivnih prebivalcev, ki delajo v občini prebivališča
+- število prebivalcev na 1. julij
+- povprečna starost prebivalcev na 1. julij
+- število vrtcev
+- število otrok v vrtcih
+- delež vseh otrok starih 1-5 let, ki obiskujejo vrtec
+- število učencev v osnovnih šolah
+- število dijakov
+- povprečna mesečna plača na osebo bruto
+- povprečna mesečna plača na osebo neto
+
+- povprečen čas vožnje zjutraj (8:00)
+- povprečen čas vožnje popoldan (17:00)
 - razdaljo od središča občine do drugih občin
 
 Poleg tega bom iz Statističnega urada RS pridobil še podatke o
@@ -60,7 +76,7 @@ Obdelani podatki pripravljeni za uporabo v raziskavi so zbrani v mapi `podatki`.
 
 - `bizi.csv` in `bizi.json` vsebujeta podatke o zaslužkih podjetji v občinah in številu zaposlenih v teh podjetjih.
 - `nepremicnine.csv` in `nepremicnine.json` vsebujeta podatke o oglasih nepremičnin na spletni strani.
-- `stat.csv` in `stat.json` vsebujeta podatke o občinah.
+- `sistat.csv` in `sistat.json` vsebujeta podatke o občinah.
 
 Izračunal bom:
 

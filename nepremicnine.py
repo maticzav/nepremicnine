@@ -1,12 +1,10 @@
 from json import load
 from bs4 import BeautifulSoup
 import re
-import os
 
 import orodja
-from orodja import vsebina_datoteke
 
-# Nastavitve
+# Nastavitve -----------------------------------------------------------------
 
 IZLUSCI_HTML = False
 
@@ -17,7 +15,7 @@ NEPREMICNINE_POSREDOVANJA = [ "oddaja", "prodaja"]
 NEPREMICNINE_JSON_DATOTEKA = "podatki/nepremicnine.json"
 NEPREMICNINE_CSV_DATOTEKA = "podatki/nepremicnine.csv"
 
-# Zbiralnik podatkov
+# Zbiralnik podatkov ---------------------------------------------------------
 
 OGLASI = dict() # slovar oglasov identificiranih z id-jem
 
@@ -221,7 +219,8 @@ for posredovanje in NEPREMICNINE_POSREDOVANJA:
 # print(f"Podvojeni oglasi: {PODVOJENI_OGLASI}")
 
 
-# Shrani podatke v datotetko
+# Shrani podatke v datotetko -------------------------------------------------
+
 # JSON
 if IZLUSCI_HTML:
     json_vsebina = { "oglasi": list(OGLASI.values()) }
