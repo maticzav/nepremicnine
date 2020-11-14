@@ -29,6 +29,8 @@ vsebina_migracij_med_regijami = orodja.vsebina_datoteke(SISTAT_MIGRACIJE_MED_REG
 
 soup_obcine = BeautifulSoup(vsebina_obcin, 'html.parser')
 
+print(f"Nalagam podatke o občinah...")
+
 for obcina in soup_obcine.select("tbody tr"):
 
     # Obdelaj vsako občino posebaj
@@ -83,10 +85,14 @@ for obcina in soup_obcine.select("tbody tr"):
         "migracije": dict()
     }
 
+    print(f"Naložil občino {ime}!")
+
 # Podatki o migracijah
 
 
 soup_migracije = BeautifulSoup(vsebina_migracij, 'html.parser')
+
+print(f"Nalagam podatke o skupnem številu migracij...")
 
 for obcina in soup_migracije.select("tbody tr"):
 
@@ -121,10 +127,14 @@ for obcina in soup_migracije.select("tbody tr"):
         "delez_lokalnih_delavcev_zenske": delez_lokalnih_delavcev_zenske,
     }
 
+    print(f"Obdelal migracije v {ime} leta {leto}!")
+
 
 # Podatki o migracijeah med regijami
 
 soup_migracije_med_regijami = BeautifulSoup(vsebina_migracij_med_regijami, 'html.parser')
+
+print(f"Nalagam migracije med občinami...")
 
 for obcina in soup_migracije_med_regijami.select("tbody tr"):
 
@@ -135,16 +145,36 @@ for obcina in soup_migracije_med_regijami.select("tbody tr"):
 
     if spol != "Spol - SKUPAJ":
         continue
-        
+
+    # Obcini
+    delo = podatki[1].getText().replace("[delo]", "").strip()
+    prebivalisce = podatki[2].getText().replace("[prebivališče]", "").strip()
+
     # Preberi podatke po letih
-    try:
-        delez_migrantov = float(podatki[2].getText().replace(",", "."))
+    for i in range(0, 20):
+        leto = 2000 + i
+        indeks = i + 3 # podatki o letih se začnejo na četrtem mestu
+        st_migrantov = int(podatki[indeks].getText())
 
-    except:
-        continue
-    
+        # Število ljudi iz posamezne občine, ki prihaja v občino na delovno mesto.
+        if delo in OBCINE:
+            if "prilivi" not in OBCINE[delo]["migracije"][leto]:
+                OBCINE[delo]["migracije"][leto].update({ "prilivi": dict() })
+                
+            OBCINE[delo]["migracije"][leto]["prilivi"][prebivalisce] = st_migrantov
+        else:
+            print(f"Neznana občina {delo}")
 
-    # OBCINE[ime]["migracije"][leto]
+        # Podatek o tem koliko ljudi iz te občine migrira v doditično drugo občino.
+        if prebivalisce in OBCINE:
+            if "migracije" not in OBCINE[prebivalisce]["migracije"][leto]:
+                OBCINE[prebivalisce]["migracije"][leto].update({ "migracije": dict() })
+                    
+            OBCINE[prebivalisce]["migracije"][leto]["migracije"][delo] = st_migrantov
+        else:
+            print(f"Neznana občina {prebivalisce}")
+
+    print(f"Obdelal migracije za prebivalce {prebivalisce}, ki delajo v {delo}!")
 
 
 
@@ -160,12 +190,17 @@ csv_obcine = []
 csv_migracije = []
 
 for obcina in list(OBCINE.values()):
-    for migracija in obcina.pop('migracije'):
+    for migracija in obcina.pop('migracije').values():
 
         # Dodaj podatek o občini
         migracija.update({
             "obcina": obcina["ime"]
         })
+
+        if "prilivi" in migracija:
+            migracija.pop("prilivi")
+        if "migracije" in migracija:
+            migracija.pop("migracije")
 
         csv_migracije.append(migracija)
 
