@@ -80,7 +80,7 @@ for obcina in soup_obcine.select("tbody tr"):
         "placa_bruto": placa_bruto,
         "placa_neto": placa_neto,
 
-        "migracije": []
+        "migracije": dict()
     }
 
 # Podatki o migracijah
@@ -109,7 +109,7 @@ for obcina in soup_migracije.select("tbody tr"):
         continue
     
 
-    OBCINE[ime]["migracije"].append({
+    OBCINE[ime]["migracije"][leto] = {
         "leto": leto,
         # Delež med vsemi delovno aktivnimi prebivalci v občini
         "delez_migrantov": delez_migrantov,
@@ -119,7 +119,7 @@ for obcina in soup_migracije.select("tbody tr"):
         "delez_lokalnih_delavcev": delez_lokalnih_delavcev,
         "delez_lokalnih_delavcev_moski": delez_lokalnih_delavcev_moski,
         "delez_lokalnih_delavcev_zenske": delez_lokalnih_delavcev_zenske,
-    })
+    }
 
 
 # Podatki o migracijeah med regijami
