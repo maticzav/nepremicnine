@@ -5,7 +5,7 @@ import orodja
 
 # Nastavitve -----------------------------------------------------------------
 
-MAPS_API_KEY = "AIzaSyAg4Nek8rvx2DcfgmrC5eDZQ7AR-gnZrXQ"
+MAPS_API_KEY = ""
 
 MAPS_OBCINE_PODATKI = "podatki/sistat/obcine.html"
 
