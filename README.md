@@ -106,7 +106,7 @@ Delovne hipoteze:
 
 > Za listanje dodaš `/n/` nakonec zgornjih naslovov. Primer `https://www.nepremicnine.net/oglasi-najem/3/`.
 
-#### Stoje Nepremičnine
+#### Stoja Nepremičnine
 
 - https://www.stoja-trade.si/Nepremicnine/p33.html
 
@@ -122,6 +122,10 @@ Za pridobitev podatkov skripta bizi.si potrbuje podatke o dostopu, ki jih nastav
 
 - https://pxweb.stat.si/SiStatData/pxweb/sl/Data/-/05C4002S.px/table/tableViewLayout2/
 - https://www.gov.si/teme/cene-naftnih-derivatov/
+
+- https://pxweb.stat.si/SiStat/sl/Home/GetSearchResultsRedirect?searchQuery=migracije&searchString=migracije
+
+> Med delovne migrante so torej uvrščene delovno aktivne osebe (brez kmetov), za katere sta znani obe teritorialni enoti, tako tista, v kateri je delovno mesto, kot tudi tista, v kateri je prebivališče.
 
 ---
 

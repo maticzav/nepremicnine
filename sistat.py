@@ -58,7 +58,7 @@ for obcina in soup_obcine.select("tbody tr"):
 
     # Ljudje, ki delajo in živijo v občini
     st_delovno_aktivnih_po_prebivaliscu = int(podatki[14].getText())
-    # Ljudje, ki živijo ali v občini ali drugje in imajo delovno mesto v občini
+    # Ljudje, ki živijo drugje in imajo delovno mesto v občini
     st_delovno_aktivnih_po_delovnem_mestu = int(podatki[15].getText())
 
     placa_bruto = float(podatki[16].getText().replace(",", "."))
