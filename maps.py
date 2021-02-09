@@ -1,5 +1,6 @@
 import googlemaps
 from bs4 import BeautifulSoup
+import math
 
 import orodja
 
@@ -66,13 +67,17 @@ for zacetek in obcine:
                 origins=zacetek,
                 destinations=konec,
                 mode="driving",
-                units="metric"
+                units="metric",
+                region="si"
             )
             podatki = grazdalja["rows"][0]["elements"][0]
 
             if podatki["status"] == "ZERO_RESULTS":
                 print(f"Ni podatka za {zacetek} in {konec}")
                 continue
+
+            if podatki["distance"]["value"] > 500_000:
+                print("WARNING! 1000km distance.")
 
             razdalja = {
                 # Razdalja je podana v metrih.
@@ -94,7 +99,9 @@ for zacetek in obcine:
         json = { "razdalje": RAZDALJE }
         orodja.zapisi_json(json, MAPS_JSON_DATOTEKA)
 
-        print(f"Shranil razdaljo med {zacetek} in {konec}")
+        kms = math.floor(razdalja["razdalja"] / 1000)
+
+        print(f"Shranil razdaljo med {zacetek} in {konec}: {kms}km")
 
 
 

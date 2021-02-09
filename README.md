@@ -127,6 +127,10 @@ Za pridobitev podatkov skripta bizi.si potrbuje podatke o dostopu, ki jih nastav
 
 > Med delovne migrante so torej uvrščene delovno aktivne osebe (brez kmetov), za katere sta znani obe teritorialni enoti, tako tista, v kateri je delovno mesto, kot tudi tista, v kateri je prebivališče.
 
+#### Povračilo potnih stroškov
+
+https://mladipodjetnik.si/novice-in-dogodki/novice/obracun-prevoz-na-delo-ter-kilometrine-2
+
 ---
 
 ## Namestitev razvijalskega okolja
