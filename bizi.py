@@ -7,8 +7,8 @@ import orodja
 # Nastavitve
 
 BIZI_PODATKI = "podatki/bizi/tabele.json"
-BIZI_JSON_DATOTEKA = "podatki/podjetja.json"
-BIZI_CSV_DATOTEKA = "podatki/podjetja.csv"
+BIZI_JSON_DATOTEKA = "podatki/bizi/podjetja.json"
+BIZI_CSV_DATOTEKA = "podatki/bizi/podjetja.csv"
 
 PODATKI = orodja.vsebina_json_datoteke(BIZI_PODATKI)
 
