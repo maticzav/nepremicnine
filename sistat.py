@@ -11,8 +11,8 @@ SISTAT_MIGRACIJE_MED_REGIJAMI_PODATKI = "podatki/sistat/migracije_med_regijami.h
 SISTAT_MIGRACIJE_PODATKI = "podatki/sistat/migracije.html"
 SISTAT_OBCINE_PODATKI = "podatki/sistat/obcine.html"
 
-SISTAT_JSON_DATOTEKA = "podatki/sistat.json"
-SISTAT_CSV_MIGRACIJE_DATOTEKA = "podatki/migracije.csv"
+SISTAT_CSV_MIGRACIJE_DATOTEKA = "podatki/sistat/migracije.csv"
+SISTAT_JSON_DATOTEKA = "podatki/obcine.json"
 SISTAT_CSV_OBCINE_DATOTEKA = "podatki/obcine.csv"
 
 # Podatki

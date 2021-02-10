@@ -1,0 +1,26 @@
+{
+  "include": ["."],
+
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "src/experimental",
+    "src/typestubs"
+  ],
+
+  "ignore": [],
+
+  "stubPath": "src/stubs",
+
+  "reportMissingImports": false,
+  "reportMissingModuleSource": false,
+  "reportMissingTypeStubs": false,
+
+  "pythonPlatform": "Linux",
+
+  "executionEnvironments": [
+    {
+      "root": "."
+    }
+  ]
+}
