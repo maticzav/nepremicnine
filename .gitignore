@@ -11,6 +11,7 @@ pyvenv.cfg
 
 # IPython
 profile_default/
+__pycache__
 ipython_config.py
 
 # Extras

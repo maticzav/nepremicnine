@@ -1,3 +1,7 @@
+"""
+Ta datoteka pobere podatke o nepremičninah iz spletne strani nepremicnine.net.
+"""
+
 from json import load
 from bs4 import BeautifulSoup
 import re

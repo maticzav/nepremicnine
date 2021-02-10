@@ -1,9 +1,45 @@
+"""
+Ta datoteka vsebuje pomožne funkcije, ki jih uporablja več skript v projektu.
+"""
+
 import csv
 import json
 import os
-import requests
 import sys
+from functools import lru_cache
 
+import requests
+
+
+@lru_cache(maxsize=None)
+def levensthein(a, b):
+    """
+    Vrne Levenstheinovo razdaljo med dvema nizoma in ne spoštuje
+    velikih in malih črk.
+    """
+
+    # Če je kateri od nizov prazen smo dolžino drugega narazen.
+    if a == "":
+        return len(b)
+    if b == "":
+        return len(a)
+    
+    # Gledamo neodvisno od velikosti znakov.
+    a = a.lower()
+    b = b.lower()
+
+    # Če sta prva znaka enaka pogledamo repe.
+    if a[0] == b[0]:
+        return levensthein(a[1:], b[1:])
+
+    # Drugače pogledamo najmanjšo možnost.
+    moznosti = [
+        levensthein(a[1:], b),
+        levensthein(a, b[1:]),
+        levensthein(a[1:], b[1:])
+    ]
+
+    return 1 + min(moznosti)
 
 def pripravi_imenik(ime_datoteke):
     '''Če še ne obstaja, pripravi prazen imenik za dano datoteko.'''

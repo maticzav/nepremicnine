@@ -2,11 +2,12 @@
 Ta datoteka uredi podatke podjetji v podatke, ki jih uporabimo v analizi.
 """
 
-from functools import lru_cache
 import pandas as pd
 import re
 
 import os.path
+
+from orodja import levensthein
 
 PODATKI = "./podatki"
 
@@ -20,36 +21,6 @@ katero ime je pravo bomo uporabili Levenshteinov algoritem.
 """
 
 imena_obcin = obcine.index.array
-
-@lru_cache(maxsize=None)
-def levensthein(a, b):
-    """
-    Vrne Levenstheinovo razdaljo med dvema nizoma in ne spoštuje
-    velikih in malih črk.
-    """
-
-    # Če je kateri od nizov prazen smo dolžino drugega narazen.
-    if a == "":
-        return len(b)
-    if b == "":
-        return len(a)
-    
-    # Gledamo neodvisno od velikosti znakov.
-    a = a.lower()
-    b = b.lower()
-
-    # Če sta prva znaka enaka pogledamo repe.
-    if a[0] == b[0]:
-        return levensthein(a[1:], b[1:])
-
-    # Drugače pogledamo najmanjšo možnost.
-    moznosti = [
-        levensthein(a[1:], b),
-        levensthein(a, b[1:]),
-        levensthein(a[1:], b[1:])
-    ]
-
-    return 1 + min(moznosti)
 
 def obcina(ime_obcine):
     """Vrne predvideno ime občine."""
