@@ -12,8 +12,8 @@ NEPREMICNINE_NASLOV = 'https://www.nepremicnine.net'
 NEPREMICNINE_POSREDOVANJA = [ "oddaja", "prodaja"]
 # NEPREMICNINE_POSREDOVANJA = [ "najem", "oddaja", "nakup", "prodaja"]
 
-NEPREMICNINE_JSON_DATOTEKA = "podatki/nepremicnine.json"
-NEPREMICNINE_CSV_DATOTEKA = "podatki/nepremicnine.csv"
+NEPREMICNINE_JSON_DATOTEKA = "podatki/nepremicninenet/nepremicnine.json"
+NEPREMICNINE_CSV_DATOTEKA = "podatki/nepremicninenet/nepremicnine.csv"
 
 # Zbiralnik podatkov ---------------------------------------------------------
 
