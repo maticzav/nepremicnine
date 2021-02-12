@@ -1,13 +1,8 @@
 # nepremicnine
 
-Z nalogo želim analizirat razmerja stroškov, ki posredno, a odločilno, vplivajo na razvoj posameznika znotraj okolja v katerem živi. Ker je okolje zelo splošen pojem, se bom osredotočil na analize znotraj posameznih občin. Med vplivne stroške bom v raziskavi uverstil:
+Z nalogo bi rad ugotovil v kateri občini se najbolj splača postavit coworing-spacee. Zanimalo me bo v katere občine Slovenska podjetja izlijejo največji del potnih stroškov in ugotavljal
 
-- ceno nepremičnin v dani občini,
-- povprečen čas porabljen za vožnjo do službe,
-- potne stroške,
-- ceno poslovnih prostorov v občini v katero ljudje migrirajo.
-
-Z raziskavo bi rad ugotovil, kolikšen delež BDP RS porabimo neefektivno zaradi okoljskih stisk in trenutne državne ureditve.
+---
 
 ## Zajem podatkov
 
@@ -69,29 +64,6 @@ Poleg tega bom iz Statističnega urada RS pridobil še podatke o
 - povprečno urno postavko glede na starostno skupino
 
 > Povprečno urno postavko bom, predvidevam, moral izračunat glede na neto povprečno plačo s povprečnim delavnikom 4 x 5dni x 8h.
-
-## Obdelava podatkov
-
-Obdelani podatki pripravljeni za uporabo v raziskavi so zbrani v mapi `podatki`. Posamezne strani za pridobitev teh podatkov so zbrane znotraj podmap z ustreznimi imeni.
-
-- `bizi.csv` in `bizi.json` vsebujeta podatke o zaslužkih podjetji v občinah in številu zaposlenih v teh podjetjih.
-- `nepremicnine.csv` in `nepremicnine.json` vsebujeta podatke o oglasih nepremičnin na spletni strani.
-- `sistat.csv` in `sistat.json` vsebujeta podatke o občinah.
-
-Izračunal bom:
-
-- povprečno ceno na kvadratni meter nepremičnine v dani občini ter primerjal podatke o ceni nepremičnin med občinami,
-- razdaljo med posameznimi občinami ter ocenil stroške tranzita med občinami ter povprečni čas tranzita,
-- povprečno ceno najema poslovnih prostorov v posamezni občini,
-- analizral podjetja z največjim dobičkom glede na občine,
-- ocenil absolutni delež ljudi v tranzitu znotraj posamezne firme na podlagi podatkov o dnevnih migracijah,
-- ocenil skupno vrednost dnevnih migracij glede na čas in stroške prometa posamezne občine ter pri tem upošteval koliko denarja ljudje v tranzitu porabijo v povprečju v drugi občini.
-
-Delovne hipoteze:
-
-- Ali obstaja povezava med povprečno najemnino in prodajno ceno nepremičnin.
-- Kolikšen bi moral bit dodatek k plči glede na odaljenost od delovnega mesta za obdobje 10 let.
-- Katere občine delajo največjo izgubo z dnevnimi migracijami.
 
 ---
 
