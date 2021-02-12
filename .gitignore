@@ -20,3 +20,4 @@ ipython_config.py
 
 node_modules
 dist
+yarn.lock
